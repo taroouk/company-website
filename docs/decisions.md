@@ -369,3 +369,50 @@ six decorative bars of fixed, non-data-derived heights plus a
 conic-gradient ring with a chart icon at its center. As before, no value,
 percentage, or label is ever printed on top of it — it reads as "this is
 an analytics/investment panel," not as a claim about real performance.
+
+## 17. Static export to GitHub Pages: middleware removed, replaced statically
+
+**Context.** Deploying to `https://taroouk.github.io/company-website/`
+requires `output: "export"` (GitHub Pages only serves static files — no
+Node server, no Vercel). Next.js does not support Middleware under
+`output: "export"`: the build fails outright if a middleware/proxy file
+is present, regardless of whether it would ever run. `src/proxy.ts`
+existed solely to run next-intl's locale-prefix middleware, whose only
+real job here — since `localePrefix: "always"` means every real page
+already has an explicit `/ar` or `/en` segment via
+`generateStaticParams` — was redirecting the bare, unprefixed `/` to the
+default locale.
+
+**Decision.** Deleted `src/proxy.ts` and added `src/app/page.tsx`: a
+static page (not a redirect handler) that renders nothing but a
+`<meta http-equiv="refresh">` to `{basePath}/ar/`, reproducing the same
+user-facing outcome (visiting the bare domain lands on the Arabic
+homepage) without needing a server. `/ar` and `/en` themselves were
+never dependent on the middleware — they're pre-rendered directly by
+`generateStaticParams` — so this only replaces the one piece of behavior
+that genuinely needed it.
+
+**Residual limitation, inherent to static hosting, not a bug:** the
+middleware also let next-intl auto-detect a visitor's preferred language
+from their `Accept-Language` header when hitting the bare `/`. A static
+host has no per-request server to read that header, so this is no longer
+possible — the root now always redirects to the default locale (`ar`)
+regardless of browser language. This is an unavoidable trade-off of
+static export, not something a different implementation choice could
+have preserved.
+
+**basePath.** `next.config.ts` sets `basePath`/`assetPrefix` to
+`/company-website` (extracted into `src/lib/basePath.ts` as a single
+source of truth). `next/link` gets this applied automatically, and so
+does `next/image` — but _only_ when it goes through Next's own
+`/_next/image` optimization endpoint. `images.unoptimized: true` (see
+above — required, since that endpoint doesn't exist without a server)
+turns off that whole code path, and with it the automatic basePath
+handling: an unoptimized `next/image` renders a plain `<img src>` using
+exactly the string it was given, unprefixed. Confirmed this the hard way
+— the first build produced correct `/company-website/_next/...` chunk
+URLs but bare, un-prefixed `/assets/...` image URLs that would 404 on
+GitHub Pages. Fixed with `src/lib/basePath.ts`'s `withBasePath()` helper,
+applied at each of the 6 `<Image src="...">` call sites across
+Hero/About/Navbar/Footer/Projects (both inline `"/assets/..."` literals
+and the `logos.full`/`project.image` values from the data layer).

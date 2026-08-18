@@ -7,6 +7,7 @@ import { LocaleSwitcher } from "@/components/layouts/LocaleSwitcher";
 import { logos, brandName } from "@/data/brand";
 import { navLinks } from "@/data/navbar";
 import { hero } from "@/data/hero";
+import { withBasePath } from "@/lib/basePath";
 import type { Locale } from "@/i18n/routing";
 
 /**
@@ -30,7 +31,7 @@ export function Navbar({ locale }: { locale: Locale }) {
       <Container className="flex h-16 items-center justify-between gap-4 sm:h-[4.5rem] lg:h-20">
         <a href="#hero" className="shrink-0" aria-label={brandName[locale]}>
           <Image
-            src={logos.full}
+            src={withBasePath(logos.full)}
             alt={brandName[locale]}
             width={244}
             height={203}

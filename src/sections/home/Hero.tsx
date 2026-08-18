@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { buttonVariants } from "@/components/base";
 import { hero } from "@/data/hero";
+import { withBasePath } from "@/lib/basePath";
 import type { Locale } from "@/i18n/routing";
 
 /**
@@ -36,7 +37,7 @@ export function Hero({ locale }: { locale: Locale }) {
       className="relative h-[calc(100dvh-4rem)] min-h-[420px] overflow-hidden sm:h-[calc(100dvh-4.5rem)] lg:h-[calc(100dvh-5rem)]"
     >
       <Image
-        src="/assets/hero/hero-main.jpg"
+        src={withBasePath("/assets/hero/hero-main.jpg")}
         alt={content.headline ?? ""}
         fill
         priority

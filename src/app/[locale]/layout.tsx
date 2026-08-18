@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing, localeDirections, type Locale } from "@/i18n/routing";
 import "@/styles/globals.css";
@@ -37,6 +38,13 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
+  // Required for static rendering: without this, next-intl falls back to
+  // resolving the locale from the request at render time (via headers()),
+  // which is a dynamic API and fails the static export build outright.
+  // This makes the locale for this render explicit instead. See
+  // docs/decisions.md #17.
+  setRequestLocale(locale);
 
   const direction = localeDirections[locale as Locale];
 

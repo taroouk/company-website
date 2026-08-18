@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Container, Text } from "@/components/base";
 import { logos, brandName, brandTagline } from "@/data/brand";
+import { withBasePath } from "@/lib/basePath";
 import type { Locale } from "@/i18n/routing";
 
 /**
@@ -22,7 +23,7 @@ export function Footer({ locale }: { locale: Locale }) {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[var(--color-accent)]/10 to-transparent" />
       <Container className="relative flex flex-col items-center gap-5 py-16 text-center sm:py-20">
         <Image
-          src={logos.full}
+          src={withBasePath(logos.full)}
           alt={brandName[locale]}
           width={244}
           height={203}

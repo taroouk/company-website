@@ -3,6 +3,7 @@ import { Section, Text } from "@/components/base";
 import { SectionHeading } from "@/components/layouts/SectionHeading";
 import { about, aboutHeading, aboutSectionHeading } from "@/data/about";
 import { brandName, brandTagline, logos } from "@/data/brand";
+import { withBasePath } from "@/lib/basePath";
 import type { Locale } from "@/i18n/routing";
 
 /**
@@ -19,7 +20,7 @@ export function About({ locale }: { locale: Locale }) {
       <div className="grid items-center gap-10 md:grid-cols-2 md:gap-14">
         <div className="flex flex-col gap-6">
           <Image
-            src={logos.full}
+            src={withBasePath(logos.full)}
             alt={brandName[locale]}
             width={244}
             height={203}
@@ -46,7 +47,7 @@ export function About({ locale }: { locale: Locale }) {
 
         <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[var(--shadow-glow)]">
           <Image
-            src="/assets/about/about-main.jpg"
+            src={withBasePath("/assets/about/about-main.jpg")}
             alt={aboutHeading[locale]}
             fill
             sizes="(min-width: 768px) 42vw, 90vw"

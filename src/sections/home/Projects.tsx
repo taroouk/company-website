@@ -10,6 +10,7 @@ import {
   projectsSectionHeading,
 } from "@/data/projects";
 import { cn } from "@/lib/cn";
+import { withBasePath } from "@/lib/basePath";
 import type { Locale } from "@/i18n/routing";
 
 // "All" is generic UI chrome (a filter-state word), not PDF business
@@ -152,7 +153,7 @@ export function Projects({ locale }: { locale: Locale }) {
               className="group flex w-[78%] shrink-0 snap-start flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] transition-[border-color,box-shadow] duration-[var(--duration-base)] hover:border-[var(--color-border-strong)] hover:shadow-[var(--shadow-glow)] md:w-full md:snap-align-none"
             >
               <Image
-                src={project.image}
+                src={withBasePath(project.image)}
                 alt={project.title}
                 width={400}
                 height={225}
