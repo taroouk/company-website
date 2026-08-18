@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "home": "الرئيسية"
+  },
+  "sections": {
+    "hero": "الرئيسية",
+    "metrics": "الإحصائيات",
+    "services": "الخدمات",
+    "projects": "المشاريع",
+    "about": "من نحن",
+    "values": "القيم",
+    "investment": "الاستثمار",
+    "contact": "تواصل معنا"
+  },
+  "footer": {
+    "copyright": "جميع الحقوق محفوظة"
+  }
+}

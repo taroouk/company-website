@@ -1,0 +1,46 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@theme inline {
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-fg);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  /* Responsive breakpoints */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+html[dir="ltr"] {
+  direction: ltr;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-accent-fg);
+}

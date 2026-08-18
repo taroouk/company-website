@@ -1,0 +1,10 @@
+export { Navbar } from "./Navbar";
+export { Hero } from "./Hero";
+export { Metrics } from "./Metrics";
+export { Services } from "./Services";
+export { Projects } from "./Projects";
+export { About } from "./About";
+export { MissionVisionValues } from "./MissionVisionValues";
+export { Investment } from "./Investment";
+export { Contact } from "./Contact";
+export { Footer } from "./Footer";

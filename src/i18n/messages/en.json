@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "home": "Home"
+  },
+  "sections": {
+    "hero": "Hero",
+    "metrics": "Metrics",
+    "services": "Services",
+    "projects": "Projects",
+    "about": "About",
+    "values": "Values",
+    "investment": "Investment",
+    "contact": "Contact"
+  },
+  "footer": {
+    "copyright": "Copyright"
+  }
+}
