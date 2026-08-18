@@ -39,8 +39,15 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # Middleware (src/proxy.ts) can't coexist with `output: "export"` —
+      # Next.js errors at build time if it's present. It stays in the repo
+      # for the Vercel/normal-server build path; only this workflow's own
+      # checkout has it removed. See src/lib/basePath.ts.
+      - name: Remove middleware (incompatible with static export)
+        run: rm -f src/proxy.ts
+
       - name: Build static export
-        run: npm run build
+        run: npm run build:pages
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

@@ -416,3 +416,46 @@ GitHub Pages. Fixed with `src/lib/basePath.ts`'s `withBasePath()` helper,
 applied at each of the 6 `<Image src="...">` call sites across
 Hero/About/Navbar/Footer/Projects (both inline `"/assets/..."` literals
 and the `logos.full`/`project.image` values from the data layer).
+
+## 18. basePath made conditional — the GH Pages config broke Vercel
+
+**Context.** #17's config hardcoded `output: "export"` and
+`basePath: "/company-website"` unconditionally, reasoning that local
+`npm run build` needed to produce a usable `out/` for verification. That
+reasoning didn't account for a second real deployment target: this repo
+is also connected to Vercel. Every URL in a GitHub-Pages build has
+`/company-website` baked into it at build time (asset paths, JS/CSS chunk
+URLs, the root page's redirect target) — correct only because GitHub
+Pages project sites are automatically served at
+`username.github.io/repo-name/`. Vercel serves a deployment at its own
+domain root, with no knowledge of that assumption, so every one of those
+`/company-website`-prefixed URLs 404s there — surfaced as Vercel's
+`NOT_FOUND` error, including on the very first request (the root page's
+own meta-refresh points at a path that doesn't exist on Vercel).
+
+**Decision.** `src/lib/basePath.ts` now branches on `GITHUB_PAGES=true`,
+an environment variable set _only_ by `.github/workflows/deploy.yml`'s
+own build step — never ambient, never inferred from the generic
+`GITHUB_ACTIONS` variable (which would also be `true` for any other
+workflow this repo might grow later, e.g. a PR-check job that shouldn't
+silently switch into static-export mode). `next.config.ts`'s entire
+export/basePath/unoptimized-images block is now conditional on this same
+flag. Everywhere else — Vercel, `next start`, local dev — gets a normal
+Next.js server build: no basePath, native `next/image` optimization, and
+(see below) working middleware.
+
+`src/proxy.ts` (deleted in #17, since middleware can't coexist with
+`output: "export"`) is restored, since normal server builds have no such
+restriction and middleware is what gives Vercel real Accept-Language
+locale detection plus a fast redirect for `/`, on top of the static
+fallback `src/app/page.tsx` still provides. The GitHub Pages workflow
+deletes `src/proxy.ts` from its own ephemeral checkout immediately before
+building (`rm -f src/proxy.ts`, one step before `npm run build:pages`) —
+this only ever touches that workflow run's local copy, never the repo
+itself, so the file stays present for every other build path.
+
+**Why not just disable Vercel instead?** That was offered as the simpler
+alternative (this project has no inherent need for two hosts), but the
+choice belongs to whoever owns the Vercel account/integration, not to a
+default assumption baked into the config. Asked directly; the answer was
+to keep both working.
